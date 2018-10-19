@@ -1,0 +1,15 @@
+{
+  "name": "robotuprising",
+  "version": "1.0.0",
+  "description": "Robotuprising 2018 hackathon",
+  "main": "bot.js",
+  "scripts": {
+    "start": "nodemon bot.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^1.18.4"
+  }
+}
