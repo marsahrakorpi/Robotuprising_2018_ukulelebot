@@ -11,5 +11,9 @@
   "license": "ISC",
   "devDependencies": {
     "nodemon": "^1.18.4"
+  },
+  "dependencies": {
+    "ev3dev-lang": "^1.0.0",
+    "http": "0.0.0"
   }
 }
