@@ -22,15 +22,18 @@ def drive_forward(time=10, speed=50, direction=0):
   tank_drive.on_for_rotations(SpeedPercent(left_speed), SpeedPercent(right_speed), time)
 
 def right_turn():
-  drive_forward(1,50,2)
+  drive_forward(1.35,50,2)
 
 def left_turn():
-  drive_forward(1,50,-2)
+  drive_forward(1.35,50,-2)
 
-
-drive_forward(50,100,0)
+drive_forward(20,100,0)
 right_turn()
-drive_forward(50,100,0)
+drive_forward(5,100,0)
+
+drive_forward(5,-100,0)
+left_turn()
+drive_forward(20,-100,0)
 
 
 #drive_forward(50,100,0)
