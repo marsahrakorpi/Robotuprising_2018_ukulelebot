@@ -16,13 +16,27 @@ print("hello world")
 
 def drive_forward(time=10, speed=50, direction=0):
   tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
-  left_speed = min(max(speed * (1-direction),100),1)
-  right_speed = min(max(speed * (1+direction),100),1)
+  left_speed = max(min(speed * (1 - direction),100),-100)
+  right_speed = max(min(speed * (1 + direction),100),-100)
 
-  tank_drive.on_for_rotations(SpeedPercent(left_speed), SpeedPercent(right_speed), 10)
+  tank_drive.on_for_rotations(SpeedPercent(left_speed), SpeedPercent(right_speed), time)
 
-drive_forward(10,100,0)
-drive_forward(10,-50,0)
-drive_forward(10,50,2)
-drive_forward(10,50,-2)
+def right_turn():
+  drive_forward(1,50,2)
+
+def left_turn():
+  drive_forward(1,50,-2)
+
+
+drive_forward(50,100,0)
+right_turn()
+drive_forward(50,100,0)
+
+
+#drive_forward(50,100,0)
+#drive_forward(10,-50,0)
+#drive_forward(1,50,2)
+#drive_forward(10,100,0)
+#drive_forward(1000,50,-2)
+#drive_forward(10,100,0)
 
