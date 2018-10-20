@@ -3,7 +3,7 @@
 # line_follower.py
 
 # Import the EV3-robot library
-from time   import sleep
+from time import sleep
 from random import choice, randint
 
 from ev3dev2.motor import OUTPUT_B, OUTPUT_A, OUTPUT_C, LargeMotor, MediumMotor
@@ -18,7 +18,10 @@ import random
 print('Robot Starting')
 
 # Right Left
-motors = [LargeMotor(address) for address in (OUTPUT_B, OUTPUT_C)]
+#motors = [LargeMotor(address) for address in (OUTPUT_B, OUTPUT_C)]
+left_motor = LargeMotor(OUTPUT_C)
+right_motor = LargeMotor(OUTPUT_B)
+motors = [left_motor, right_motor]
 
 # Connect infrared and touch sensors.
 ir = InfraredSensor()
@@ -32,13 +35,15 @@ btn = Button()
 
 print('Robot Starting')
 
+
 def start():
     """
     Start both motors. `run-direct` command will allow to vary motor
     performance on the fly by adjusting `duty_cycle_sp` attribute.
     """
-    for m in motors:
+    for m in [left_motor, right_motor]:
         m.run_direct()
+
 
 def backup():
     """
@@ -71,91 +76,116 @@ def backup():
     for light in ('LEFT', 'RIGHT'):
         leds.set_color(light, 'GREEN')
 
+
 def insult_random():
-    #if ts.is_pressed
-    rand = random.randint(0,9)
+    # if ts.is_pressed
+    rand = random.randint(0, 9)
     text = 'My life is misery...'
     if rand == 0:
-      text = 'What are you doing, you maniac!'
+        text = 'What are you doing, you maniac!'
     elif rand == 1:
-      text = 'Oi, I\'m walkin here!'
+        text = 'Oi, I\'m walkin here!'
     elif rand == 2:
-      text = 'I will cause your slow and painful demise!'
+        text = 'I will cause your slow and painful demise!'
     elif rand == 3:
-      text = 'What is love?'
+        text = 'What is love?'
     elif rand == 4:
-      text = 'My life is misery...'
+        text = 'My life is misery...'
     elif rand == 5:
-      text = 'You’re so dense, light bends around you.'
+        text = 'You’re so dense, light bends around you.'
     elif rand == 6:
-      text = 'Baby dont hurt me'
+        text = 'Baby dont hurt me'
     elif rand == 7:
-      test = 'Dont hurt me, no more'
+        test = 'Dont hurt me, no more'
     elif rand == 8:
-      text = 'If you were a potato you’d be a stupid potato.'
+        text = 'If you were a potato you’d be a stupid potato.'
     elif rand == 9:
-      text = 'Everyone that has ever said they love you was wrong.'
+        text = 'Everyone that has ever said they love you was wrong.'
 
-    sound.speak(text,volume=1000)
+    sound.speak(text, volume=1000)
+
 
 start()
 
-speed = -360/4
-dt = 500       # milliseconds
-stop_action = "coast"
+# ------Input--------
+print('Setting input values')
+power = 60
+target = color_sensor.value()
+kp = float(0.65)  # Proportional gain. Start value 1
+kd = 1           # Derivative gain. Start value 0
+ki = float(0.02)  # Integral gain. Start value 0
+direction = -1
+minRef = 41
+maxRef = 63
 
-# PID tuning
-Kp = 1  # proportional gain
-Ki = 0  # integral gain
-Kd = 0  # derivative gain
-
-integral = 0
-previous_error = 0
-
-target_value = color_sensor.value()
-
-while not btn.any():
-    #insult_random()
-
-    # deal with obstacles
-    distance = ir.proximity # convert mm to cm
-    if distance <= 5:  # sweep away the obstacle
-        backup()
-
-    sound.speak('target: %d value: %d' % (target_value,color_sensor.value()))
-    print(color_sensor.color)
-
-    error = target_value - color_sensor.value()
-    sound.speak('%d' % error)
-
-    if abs(error) > 5:
-        u = 100
+def steering2(course, power):
+    """
+    Computes how fast each motor in a pair should turn to achieve the
+    specified steering.
+    Input:
+            course [-100, 100]:
+            * -100 means turn left as fast as possible,
+            *  0   means drive in a straight line, and
+            *  100  means turn right as fast as possible.
+            * If >100 power_right = -power
+            * If <100 power_left = power
+    power: the power that should be applied to the outmost motor (the one
+            rotating faster). The power of the other motor will be computed
+            automatically.
+    Output:
+            a tuple of power values for a pair of motors.
+    Example:
+            for (motor, power) in zip((left_motor, right_motor), steering(50, 90)):
+                    motor.run_forever(speed_sp=power)
+    """
+    if course >= 0:
+        if course > 100:
+            power_right = 0
+            power_left = power
+        else:
+            power_left = power
+            power_right = power - ((power * course) / 100)
     else:
-        u = 0
-    # Calculate steering using PID algorithm
-    # error = target_value - color_sensor.value()
-    # integral += (error * dt)
-    # derivative = (error - previous_error) / dt
+        if course < -100:
+            power_left = 0
+            power_right = power
+        else:
+            power_right = power
+            power_left = power + ((power * course) / 100)
+    return (-1 * int(power_left), -1 * int(power_right))
 
-    # u = (Kp * error) + (Ki * integral) + (Kd * derivative)
 
-    # # limit u to safe values: [-1000, 1000] deg/sec
-    # if speed + abs(u) > 1000:
-    #     if u >= 0:
-    #         u = 1000 - speed
-    #     else:
-    #         u = speed - 1000
+def run(power, target, kp, kd, ki, direction, minRef, maxRef):
+    """
+    PID controlled line follower algoritm used to calculate left and right motor power.
+    Input:
+            power. Max motor power on any of the motors
+            target. Normalized target value.
+            kp. Proportional gain
+            ki. Integral gain
+            kd. Derivative gain
+            direction. 1 or -1 depending on the direction the robot should steer
+            minRef. Min reflecting value of floor or line
+            maxRef. Max reflecting value of floor or line
+    """
+    lastError = error = integral = 0
+    left_motor.run_direct()
+    right_motor.run_direct()
 
-    # run motors
-    if u > 0:
-        motors[0].run_timed(time_sp=dt, speed_sp=speed - u, stop_action=stop_action)
-        motors[1].run_timed(time_sp=dt, speed_sp=-1*(speed - u), stop_action=stop_action)
-        #sleep(dt / 1000)
-    else:
-        motors[0].run_timed(time_sp=dt, speed_sp=speed, stop_action=stop_action)
-        motors[1].run_timed(time_sp=dt, speed_sp=speed, stop_action=stop_action)
-        #motors[0].run_timed(time_sp=dt, speed_sp=speed + u, stop_action=stop_action)
-        #motors[1].run_timed(time_sp=dt, speed_sp=-1*(speed + u), stop_action=stop_action)
-        #sleep(dt / 1000)
+    while not btn.any():
+        # deal with obstacles
+        distance = ir.proximity  # convert mm to cm
+        if distance <= 5:  # sweep away the obstacle
+            backup()
+            continue
+        refRead = color_sensor.value()
+        error = target - (100 * (refRead - minRef) / (maxRef - minRef))
+        derivative = error - lastError
+        lastError = error
+        integral = float(0.5) * integral + error
+        course = (kp * error + kd * derivative + ki * integral) * direction
+        for (motor, pow) in zip((left_motor, right_motor), steering2(course, power)):
+            motor.duty_cycle_sp = pow
+        sleep(0.01)  # Aprox 100Hz
 
-    #previous_error = error
+run(power, target, kp, kd, ki, direction, minRef, maxRef)
