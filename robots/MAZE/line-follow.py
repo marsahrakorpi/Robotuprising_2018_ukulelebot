@@ -73,7 +73,7 @@ def backup():
 
 def insult_random():
     #if ts.is_pressed
-    rand = random.randint(0,3)
+    rand = random.randint(0,9)
     text = 'My life is misery...'
     if rand == 0:
       text = 'What are you doing, you maniac!'
@@ -83,8 +83,18 @@ def insult_random():
       text = 'I will cause your slow and painful demise!'
     elif rand == 3:
       text = 'What is love?'
-    else:
+    elif rand == 4:
       text = 'My life is misery...'
+    elif rand == 5:
+      text = 'You’re so dense, light bends around you.'
+    elif rand == 6:
+      text = 'Baby dont hurt me'
+    elif rand == 7:
+      test = 'Dont hurt me, no more'
+    elif rand == 8:
+      text = 'If you were a potato you’d be a stupid potato.'
+    elif rand == 9:
+      text = 'Everyone that has ever said they love you was wrong.'
 
     sound.speak(text,volume=1000)
 
