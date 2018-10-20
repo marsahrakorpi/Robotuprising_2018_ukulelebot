@@ -12,7 +12,7 @@
 from time   import sleep
 from random import choice, randint
 
-from ev3dev2.motor import OUTPUT_B, OUTPUT_C, LargeMotor
+from ev3dev2.motor import OUTPUT_B, OUTPUT_A, LargeMotor
 from ev3dev2.sensor.lego import InfraredSensor, TouchSensor
 from ev3dev2.button import Button
 from ev3dev2.led import Leds
@@ -72,7 +72,7 @@ def backup():
 
 def turn():
     """
-    Turn the robot in random direction.
+    Turn the robot right
     """
 
     # We want to turn the robot wheels in opposite directions from 1/4 to 3/4

@@ -17,6 +17,8 @@ class UkuleleControlledTank(MoveTank):
         left_motor = self.motors[left_motor_port]
         right_motor = self.motors[right_motor_port]
         self.speed_sp = speed
+
+        # 
         self.remote = InfraredSensor()
         self.remote.on_channel1_top_left = self.make_move(left_motor, self.speed_sp)
         self.remote.on_channel1_bottom_left = self.make_move(left_motor, self.speed_sp* -1)
@@ -47,15 +49,15 @@ class UkuleleControlledTank(MoveTank):
 
 class EV3D4WebControlled(UkuleleControlledTank):
 
-    def __init__(self, medium_motor=OUTPUT_A, left_motor=OUTPUT_C, right_motor=OUTPUT_B):
+    def __init__(self, medium_motor=OUTPUT_C, left_motor=OUTPUT_A, right_motor=OUTPUT_B):
         UkuleleControlledTank.__init__(self, left_motor, right_motor)
-        self.medium_motor = MediumMotor(medium_motor)
+        ''' self.medium_motor = MediumMotor(medium_motor)
 
         if not self.medium_motor.connected:
             log.error("%s is not connected" % self.medium_motor)
             sys.exit(1)
 
-        self.medium_motor.reset()
+        self.medium_motor.reset() '''
 
 
 if __name__ == '__main__':
