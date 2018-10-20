@@ -17,13 +17,15 @@ from ev3dev2.sensor.lego import InfraredSensor, TouchSensor
 from ev3dev2.button import Button
 from ev3dev2.led import Leds
 from ev3dev2.sound import Sound
+from ev3dev2.sensor.lego import ColorSensor
 
 # Connect two large motors on output ports B and C:
 motors = [LargeMotor(address) for address in (OUTPUT_A, OUTPUT_B)]
 
 # Connect infrared and touch sensors.
 ir = InfraredSensor()
-ts = TouchSensor()
+#ts = TouchSensor()
+color_sensor = ColorSensor()
 
 print('Robot Starting')
 
@@ -92,12 +94,23 @@ def turn():
 start()
 while not btn.any():
 
-    if ts.is_pressed:
-        # We bumped an obstacle.
-        # Back away, turn and go in other direction.
-        backup()
-        turn()
-        start()
+
+    if color_sensor.color != 6:
+        turn();
+        start();
+    # while True:
+    #     color = color_sensor.color
+    #     text = ColorSensor.COLORS[color]
+    #     sound.speak(text)
+    #     sleep(2)
+
+
+    # if ts.is_pressed:
+    #     # We bumped an obstacle.
+    #     # Back away, turn and go in other direction.
+    #     backup()
+    #     turn()
+    #     start()
 
     # Infrared sensor in proximity mode will measure distance to the closest
     # object in front of it.
@@ -105,7 +118,7 @@ while not btn.any():
 
     if distance > 60:
         # Path is clear, run at full speed.
-        dc = 95
+        dc = 30
     else:
         # Obstacle ahead, slow down.
         dc = 30
