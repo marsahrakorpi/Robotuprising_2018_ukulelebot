@@ -8,7 +8,7 @@ ArduinoUnoSerial = serial.Serial('com6',500000)
 if ArduinoUnoSerial:
     print ("Arduino found!")
 else:
-    print ("Arduino connecition failed")
+    print ("Arduino connection failed")
     exit()
 
 while True:     
