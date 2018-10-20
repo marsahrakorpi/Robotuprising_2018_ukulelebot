@@ -186,6 +186,17 @@ def run(power, target, kp, kd, ki, direction, minRef, maxRef):
         course = (kp * error + kd * derivative + ki * integral) * direction
         for (motor, pow) in zip((left_motor, right_motor), steering2(course, power)):
             motor.duty_cycle_sp = pow
+        #check colro again, if its still wrong we assume the need to go right instead
+        refRead = color_sensor.value()
+        error = target - (100 * (refRead - minRef) / (maxRef - minRef))
+        derivative = error - lastError
+
+        if not error == target :
+            course = (kp * error + kd * derivative + ki * integral) * 1*direction
+            for (motor, pow) in zip((left_motor, right_motor), steering2(-1*course, power)):
+                motor.duty_cycle_sp = pow
+
+            
         sleep(0.01)  # Aprox 100Hz
 
 run(power, target, kp, kd, ki, direction, minRef, maxRef)
