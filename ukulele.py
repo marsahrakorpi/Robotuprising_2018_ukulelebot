@@ -11,7 +11,7 @@ else:
     print ("Arduino connecition failed")
     exit()
 
-while 1:     
+while True:     
     print ArduinoUnoSerial.readline()    
 
 
