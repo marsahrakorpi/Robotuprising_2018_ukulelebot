@@ -12,13 +12,6 @@ class EV3D4WebControlled(WebControlledTank):
         WebControlledTank.__init__(self, left_motor, right_motor)
         self.medium_motor = MediumMotor(medium_motor)
 
-        if not self.medium_motor.connected:
-            log.error("%s is not connected" % self.medium_motor)
-            sys.exit(1)
-
-        self.medium_motor.reset()
-
-
 if __name__ == '__main__':
 
     # Change level to logging.INFO to make less chatty
