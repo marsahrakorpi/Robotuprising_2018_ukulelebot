@@ -12,7 +12,7 @@
 from time   import sleep
 from random import choice, randint
 
-from ev3dev2.motor import OUTPUT_B, OUTPUT_A, LargeMotor
+from ev3dev2.motor import OUTPUT_C, OUTPUT_B, OUTPUT_A, LargeMotor
 from ev3dev2.sensor.lego import InfraredSensor, TouchSensor
 from ev3dev2.button import Button
 from ev3dev2.led import Leds
@@ -20,7 +20,7 @@ from ev3dev2.sound import Sound
 from ev3dev2.sensor.lego import ColorSensor
 
 # Connect two large motors on output ports B and C:
-motors = [LargeMotor(address) for address in (OUTPUT_A, OUTPUT_B)]
+motors = [LargeMotor(address) for address in (OUTPUT_B, OUTPUT_C)]
 
 # Connect infrared and touch sensors.
 ir = InfraredSensor()
