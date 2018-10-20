@@ -80,7 +80,7 @@ def backup():
     # until both motors are stopped before continuing.
     for m in motors:
         m.stop(stop_action='brake')
-        m.run_timed(speed_sp=-500, time_sp=1500)
+        m.run_timed(speed_sp=500, time_sp=500)
 
     # When motor is stopped, its `state` attribute returns empty list.
     # Wait until both motors are stopped:
@@ -127,10 +127,10 @@ while not btn.any():
 
     if distance > 60:
         # Path is clear, run at full speed.
-        dc = 95
+        dc = -95
     else:
         # Obstacle ahead, slow down.
-        dc = 30
+        dc = -30
 
     for m in motors:
         m.duty_cycle_sp = dc
