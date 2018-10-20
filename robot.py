@@ -4,8 +4,33 @@ from ev3dev2.sensor import INPUT_1
 from ev3dev2.sensor.lego import TouchSensor
 from ev3dev2.led import Leds
 
+from ev3dev2.sound import Sound
+import random
 # TODO: Add code here
 print("hello world")
+sound = Sound()
+#sound.speak('Welcome to the E V 3 dev project!')
+
+ts=TouchSensor()
+def insult_random():
+    #if ts.is_pressed
+    rand = random.randint(0,3)
+    
+    if rand == 0:
+      sound.speak('What are you doing, you maniac!')
+    elif rand == 1:
+      sound.speak('Oi, I\'m walkin here!')
+    elif rand == 2:
+      sound.speak('I will cause your slow and painful demise!')
+    elif rand == 3:
+      sound.speak('What is love?')
+    else:
+      sound.speak('My life is misery...')
+
+#can call sinults with
+#  if ts.is_pressed:
+#    insult_random()
+
 
 # drive in a turn for 5 rotations of the outer motor
 # the first two parameters can be unit classes or percentages.
